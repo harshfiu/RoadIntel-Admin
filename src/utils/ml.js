@@ -30,35 +30,56 @@ export function runMockML(reportId) {
 
   const roadType = ROAD_TYPES[Math.floor(seededRandom(reportId + '_rt') * 4)];
 
-  // Map J score to urgency label
   let urgency;
-  if (J >= 1.2)      urgency = 'Critical';
-  else if (J >= 0.7) urgency = 'High';
+  if (J >= 1.2)       urgency = 'Critical';
+  else if (J >= 0.7)  urgency = 'High';
   else if (J >= 0.35) urgency = 'Medium';
-  else               urgency = 'Low';
+  else                urgency = 'Low';
 
-  // Pothole size label
   const size = urgency === 'Critical' ? 'Critical'
     : severity === 'Major'  ? 'Large'
     : severity === 'Medium' ? 'Medium' : 'Small';
 
-  // Normalise J to 0-100 priority score for the progress bar
   const priority = Math.min(100, Math.round(J * 55));
 
   return { severity, Ap, Rw, Td, J, roadType, urgency, size, priority };
 }
 
-// Colour helpers used across components
+// Colour helpers — light-mode Tailwind classes + dark-mode variants
+// Both badge and badgeDark strings appear statically so Tailwind JIT includes them.
 export const URGENCY_COLORS = {
-  Critical: { bg: 'bg-purple-100', text: 'text-purple-700', dot: '#7c3aed', hex: '#7c3aed' },
-  High:     { bg: 'bg-red-100',    text: 'text-red-600',    dot: '#ef4444', hex: '#ef4444' },
-  Medium:   { bg: 'bg-orange-100', text: 'text-orange-600', dot: '#f97316', hex: '#f97316' },
-  Low:      { bg: 'bg-green-100',  text: 'text-green-600',  dot: '#22c55e', hex: '#22c55e' },
+  Critical: {
+    badge:     'bg-purple-100 text-purple-700',
+    badgeDark: 'bg-purple-500/20 text-purple-300',
+    dot: '#7c3aed', hex: '#7c3aed',
+  },
+  High: {
+    badge:     'bg-red-100 text-red-600',
+    badgeDark: 'bg-red-500/20 text-red-400',
+    dot: '#ef4444', hex: '#ef4444',
+  },
+  Medium: {
+    badge:     'bg-orange-100 text-orange-600',
+    badgeDark: 'bg-orange-500/20 text-orange-400',
+    dot: '#f97316', hex: '#f97316',
+  },
+  Low: {
+    badge:     'bg-green-100 text-green-600',
+    badgeDark: 'bg-green-500/20 text-green-400',
+    dot: '#22c55e', hex: '#22c55e',
+  },
 };
 
 export const STATUS_COLORS = {
   Reported: 'bg-slate-100 text-slate-600',
   Assigned: 'bg-amber-100 text-amber-700',
-  Verified: 'bg-blue-100  text-blue-700',
+  Verified: 'bg-blue-100 text-blue-700',
   Resolved: 'bg-green-100 text-green-700',
+};
+
+export const STATUS_COLORS_DARK = {
+  Reported: 'bg-slate-700/40 text-slate-300',
+  Assigned: 'bg-amber-500/20 text-amber-300',
+  Verified: 'bg-blue-500/20 text-blue-300',
+  Resolved: 'bg-green-500/20 text-green-300',
 };

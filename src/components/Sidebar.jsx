@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 const NAV = [
   {
@@ -21,6 +22,7 @@ const NAV = [
 
 export default function Sidebar({ activePage, setActivePage }) {
   const [collapsed, setCollapsed] = useState(false);
+  const { isDark, toggleTheme } = useTheme();
 
   return (
     <aside
@@ -74,6 +76,17 @@ export default function Sidebar({ activePage, setActivePage }) {
             </div>
           </div>
         )}
+
+        {/* Dark / Light toggle */}
+        <button
+          onClick={toggleTheme}
+          title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          className="w-full flex items-center gap-2 text-slate-400 hover:text-white text-xs py-1.5 px-2 rounded hover:bg-white/5 transition-colors"
+        >
+          <span className="text-base leading-none">{isDark ? '☀️' : '🌙'}</span>
+          {!collapsed && <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>}
+        </button>
+
         <button
           onClick={() => setCollapsed(c => !c)}
           className="w-full text-slate-400 hover:text-white text-xs py-1.5 px-2 rounded hover:bg-white/5 transition-colors text-left"

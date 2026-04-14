@@ -1,10 +1,11 @@
-import { URGENCY_COLORS } from '../utils/ml';
+import { useTheme } from '../context/ThemeContext';
+import { URGENCY_COLORS, STATUS_COLORS, STATUS_COLORS_DARK } from '../utils/ml';
 
 // ── Simple SVG pie chart ──────────────────────────────────────────
 function PieChart({ slices }) {
   if (!slices.length || slices.every(s => s.value === 0)) {
     return (
-      <div className="flex items-center justify-center h-48 text-slate-400 text-sm">
+      <div className="flex items-center justify-center h-48 text-slate-400 dark:text-slate-500 text-sm">
         No data yet
       </div>
     );
@@ -42,7 +43,9 @@ function PieChart({ slices }) {
         {slices.map(s => (
           <div key={s.label} className="flex items-center gap-2 text-sm">
             <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: s.color }} />
-            <span className="text-slate-600">{s.label}: <span className="font-semibold">{s.value}</span></span>
+            <span className="text-slate-600 dark:text-slate-400">
+              {s.label}: <span className="font-semibold">{s.value}</span>
+            </span>
           </div>
         ))}
       </div>
@@ -53,12 +56,17 @@ function PieChart({ slices }) {
 // ── Stat card ─────────────────────────────────────────────────────
 function StatCard({ label, value, sub, icon, accent }) {
   return (
-    <div className={`bg-white rounded-xl p-5 border-l-4 shadow-sm`} style={{ borderLeftColor: accent }}>
+    <div
+      className="bg-white dark:bg-[#161B28] rounded-xl p-5 border-l-4 shadow-sm dark:shadow-none ring-1 ring-transparent dark:ring-white/[0.07]"
+      style={{ borderLeftColor: accent }}
+    >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-xs text-slate-500 font-semibold uppercase tracking-wide">{label}</p>
-          <p className="text-4xl font-extrabold text-slate-800 mt-1">{value}</p>
-          {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wide">
+            {label}
+          </p>
+          <p className="text-4xl font-extrabold text-slate-800 dark:text-slate-100 mt-1">{value}</p>
+          {sub && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{sub}</p>}
         </div>
         <span className="text-3xl select-none opacity-80">{icon}</span>
       </div>
@@ -68,9 +76,11 @@ function StatCard({ label, value, sub, icon, accent }) {
 
 // ── Dashboard page ────────────────────────────────────────────────
 export default function DashboardPage({ reports, loading, error }) {
+  const { isDark } = useTheme();
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full text-slate-400 gap-3">
+      <div className="flex items-center justify-center h-full text-slate-400 dark:text-slate-500 gap-3">
         <svg className="animate-spin h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
@@ -83,8 +93,8 @@ export default function DashboardPage({ reports, loading, error }) {
   if (error) {
     return (
       <div className="p-8">
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-          <p className="text-red-700 font-semibold">{error}</p>
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 rounded-xl p-6 text-center">
+          <p className="text-red-700 dark:text-red-400 font-semibold">{error}</p>
         </div>
       </div>
     );
@@ -113,8 +123,10 @@ export default function DashboardPage({ reports, loading, error }) {
   return (
     <div className="p-8 space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-800">Dashboard</h1>
-        <p className="text-slate-500 text-sm mt-0.5">Overview of pothole reports and repair status</p>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Dashboard</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">
+          Overview of pothole reports and repair status
+        </p>
       </div>
 
       {/* Stats grid */}
@@ -129,52 +141,55 @@ export default function DashboardPage({ reports, loading, error }) {
 
       {/* Charts row */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-          <h2 className="font-semibold text-slate-700 mb-4">Reports by Urgency</h2>
+        <div className="bg-white dark:bg-[#161B28] rounded-xl p-6 shadow-sm dark:shadow-none border border-slate-100 dark:border-white/[0.07]">
+          <h2 className="font-semibold text-slate-700 dark:text-slate-200 mb-4">Reports by Urgency</h2>
           <PieChart slices={pieSlices} />
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-          <h2 className="font-semibold text-slate-700 mb-4">Monthly Fixes</h2>
+        <div className="bg-white dark:bg-[#161B28] rounded-xl p-6 shadow-sm dark:shadow-none border border-slate-100 dark:border-white/[0.07]">
+          <h2 className="font-semibold text-slate-700 dark:text-slate-200 mb-4">Monthly Fixes</h2>
           {resolved === 0 ? (
-            <div className="flex items-center justify-center h-40 text-slate-400 text-sm">
+            <div className="flex items-center justify-center h-40 text-slate-400 dark:text-slate-500 text-sm">
               No fix data available yet
             </div>
           ) : (
             <div className="flex items-end gap-2 h-40">
-              {/* Simple bar for resolved count */}
               <div className="flex flex-col items-center gap-1">
-                <span className="text-xs text-slate-600 font-semibold">{resolved}</span>
+                <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold">{resolved}</span>
                 <div
                   className="w-10 bg-blue-500 rounded-t"
                   style={{ height: `${Math.min(100, resolved * 20)}%` }}
                 />
-                <span className="text-xs text-slate-400">This month</span>
+                <span className="text-xs text-slate-400 dark:text-slate-500">This month</span>
               </div>
             </div>
           )}
         </div>
       </div>
 
-      {/* Recent activity */}
+      {/* Top priority reports */}
       {reports.length > 0 && (
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
-          <h2 className="font-semibold text-slate-700 mb-4">Top Priority Reports</h2>
+        <div className="bg-white dark:bg-[#161B28] rounded-xl p-6 shadow-sm dark:shadow-none border border-slate-100 dark:border-white/[0.07]">
+          <h2 className="font-semibold text-slate-700 dark:text-slate-200 mb-4">Top Priority Reports</h2>
           <div className="space-y-3">
             {reports.slice(0, 5).map((r, i) => {
               const uc = URGENCY_COLORS[r.ml?.urgency] ?? URGENCY_COLORS.Low;
+              const sc = isDark
+                ? (STATUS_COLORS_DARK[r.status] ?? STATUS_COLORS_DARK.Reported)
+                : (STATUS_COLORS[r.status] ?? STATUS_COLORS.Reported);
               return (
                 <div key={r.id} className="flex items-center gap-3 text-sm">
-                  <span className="text-slate-400 w-5 text-center font-bold">#{i + 1}</span>
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${uc.bg} ${uc.text}`}>
+                  <span className="text-slate-400 dark:text-slate-500 w-5 text-center font-bold">
+                    #{i + 1}
+                  </span>
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${isDark ? uc.badgeDark : uc.badge}`}>
                     {r.ml?.urgency}
                   </span>
-                  <span className="text-slate-500 font-mono text-xs">
+                  <span className="text-slate-500 dark:text-slate-400 font-mono text-xs">
                     {r.latitude?.toFixed(4)}, {r.longitude?.toFixed(4)}
                   </span>
-                  <span className="ml-auto text-slate-400">J = {r.ml?.J}</span>
-                  <span className={`px-2 py-0.5 rounded-full text-xs
-                    ${r.status === 'Assigned' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'}`}>
+                  <span className="ml-auto text-slate-400 dark:text-slate-500">J = {r.ml?.J}</span>
+                  <span className={`px-2 py-0.5 rounded-full text-xs ${sc}`}>
                     {r.status}
                   </span>
                 </div>

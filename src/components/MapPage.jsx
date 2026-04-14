@@ -31,8 +31,8 @@ export default function MapPage({ reports }) {
   return (
     <div className="p-8 space-y-4 h-full flex flex-col">
       <div>
-        <h1 className="text-2xl font-bold text-slate-800">Map View</h1>
-        <p className="text-slate-500 text-sm mt-0.5">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Map View</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">
           {filtered.length} potholes with location data
         </p>
       </div>
@@ -40,7 +40,7 @@ export default function MapPage({ reports }) {
       {/* Filters + Legend bar */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <span className="text-sm text-slate-600 font-medium">Filter:</span>
+          <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">Filter:</span>
           {[
             { value: urgencyF, set: setUrgencyF, options: ['All Urgency', 'Critical', 'High', 'Medium', 'Low'] },
             { value: statusF,  set: setStatusF,  options: ['All Status', 'Reported', 'Assigned', 'Resolved'] },
@@ -49,7 +49,7 @@ export default function MapPage({ reports }) {
               key={i}
               value={f.value}
               onChange={e => f.set(e.target.value)}
-              className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm bg-white text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-slate-200 dark:border-white/[0.08] rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-[#1E2940] text-slate-600 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {f.options.map(o => <option key={o}>{o}</option>)}
             </select>
@@ -59,7 +59,7 @@ export default function MapPage({ reports }) {
         {/* Legend */}
         <div className="flex items-center gap-4">
           {LEGEND.map(l => (
-            <div key={l.label} className="flex items-center gap-1.5 text-xs text-slate-600">
+            <div key={l.label} className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400">
               <span className="w-3 h-3 rounded-full" style={{ background: l.color }} />
               {l.label}
             </div>
@@ -68,7 +68,7 @@ export default function MapPage({ reports }) {
       </div>
 
       {/* Map */}
-      <div className="flex-1 rounded-xl overflow-hidden border border-slate-200 shadow-sm" style={{ minHeight: 420 }}>
+      <div className="flex-1 rounded-xl overflow-hidden border border-slate-200 dark:border-white/[0.07] shadow-sm dark:shadow-none" style={{ minHeight: 420 }}>
         <MapContainer
           center={[centerLat, centerLon]}
           zoom={filtered.length ? 10 : 5}

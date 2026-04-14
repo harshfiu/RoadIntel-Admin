@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
 import { runMockML } from './utils/ml';
+import { ThemeProvider } from './context/ThemeContext';
 import Sidebar from './components/Sidebar';
 import DashboardPage from './components/DashboardPage';
 import ReportsPage from './components/ReportsPage';
 import MapPage from './components/MapPage';
 import TeamsPage from './components/TeamsPage';
 
-export default function App() {
+function AppShell() {
   const [activePage, setActivePage] = useState('dashboard');
   const [reports, setReports]       = useState([]);
   const [loading, setLoading]       = useState(true);
@@ -20,7 +21,6 @@ export default function App() {
       (snapshot) => {
         const rows = snapshot.docs.map(d => {
           const data = d.data();
-          // Handle both SDK Timestamp and plain ISO strings (from REST API submissions)
           let ts = null;
           if (data.timestamp?.toDate) ts = data.timestamp.toDate();
           else if (data.timestamp)    ts = new Date(data.timestamp);
@@ -47,11 +47,19 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen bg-slate-100 overflow-hidden">
+    <div className="flex h-screen bg-slate-100 dark:bg-[#0D1117] overflow-hidden transition-colors duration-200">
       <Sidebar activePage={activePage} setActivePage={setActivePage} />
       <main className="flex-1 overflow-y-auto">
         {pages[activePage]}
       </main>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppShell />
+    </ThemeProvider>
   );
 }
