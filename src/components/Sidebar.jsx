@@ -20,7 +20,7 @@ const NAV = [
   },
 ];
 
-export default function Sidebar({ activePage, setActivePage }) {
+export default function Sidebar({ activePage, setActivePage, userEmail, onSignOut }) {
   const [collapsed, setCollapsed] = useState(false);
   const { isDark, toggleTheme } = useTheme();
 
@@ -68,11 +68,11 @@ export default function Sidebar({ activePage, setActivePage }) {
         {!collapsed && (
           <div className="flex items-center gap-2 px-2 py-1">
             <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-              SA
+              {userEmail ? userEmail[0].toUpperCase() : 'A'}
             </div>
             <div className="overflow-hidden">
-              <p className="text-white text-xs font-semibold leading-none">Super Admin</p>
-              <p className="text-slate-500 text-[10px] leading-none mt-0.5">Super Admin</p>
+              <p className="text-white text-xs font-semibold leading-none truncate">Admin</p>
+              <p className="text-slate-500 text-[10px] leading-none mt-0.5 truncate">{userEmail ?? ''}</p>
             </div>
           </div>
         )}
@@ -93,7 +93,10 @@ export default function Sidebar({ activePage, setActivePage }) {
         >
           {collapsed ? '→' : '← Collapse'}
         </button>
-        <button className="w-full bg-red-600 hover:bg-red-700 text-white text-xs py-1.5 rounded transition-colors font-medium">
+        <button
+          onClick={onSignOut}
+          className="w-full bg-red-600 hover:bg-red-700 text-white text-xs py-1.5 rounded transition-colors font-medium"
+        >
           {collapsed ? '✕' : 'Logout'}
         </button>
       </div>
